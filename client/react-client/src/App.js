@@ -1,23 +1,114 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import AuthModal from './components/AuthModal';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [initialTab, setInitialTab] = useState('login');
+
+  // Verificar si el usuario está autenticado al cargar
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    const userData = localStorage.getItem('user');
+
+    if (token && userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+
+        // Si es administrador, redirigir al panel de admin (puerto 5173)
+        if (parsedUser.is_staff || parsedUser.is_admin) {
+          window.location.href = 'http://localhost:5173';
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
+
+  const openModal = (tab) => {
+    setInitialTab(tab);
+    setIsModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setUser(null);
+  };
+
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    setIsModalOpen(false);
+
+    // Redirigir según el rol
+    if (userData.is_staff || userData.is_admin) {
+      // Es administrador, redirigir al panel de admin (puerto 5173)
+      window.location.href = 'http://localhost:5173';
+    }
+    // Si es cliente normal, se queda en esta vista
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="nav-brand">MOWI</div>
+        <div className="nav-buttons">
+          {isAuthenticated ? (
+            <>
+              <span style={{ marginRight: '15px', fontSize: '16px', color: '#333' }}>
+                Hola, {user?.name || user?.username}
+              </span>
+              <button
+                className="nav-btn-secondary"
+                onClick={handleLogout}
+              >
+                Cerrar Sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="nav-btn-primary"
+                onClick={() => openModal('login')}
+              >
+                Iniciar Sesión
+              </button>
+              <button
+                className="nav-btn-secondary"
+                onClick={() => openModal('register')}
+              >
+                Registrarse
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Hero section */}
+      <div className="hero-section">
+        <h1>¡Grandes ofertas en MOWI!</h1>
+        <p>Descubre productos increíbles a precios únicos</p>
+        <button className="hero-btn">Explorar Productos</button>
+      </div>
+
+      {/* Modal de autenticación */}
+      <AuthModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialTab={initialTab}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }
