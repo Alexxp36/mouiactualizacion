@@ -28,7 +28,8 @@ def register_view(request):
                 'id': user.id,
                 'email': user.email,
                 'name': user.name,
-                'is_admin': user.is_admin
+                'is_admin': user.is_admin,
+                'is_staff': user.is_staff
             }
         }, status=status.HTTP_201_CREATED)
 
@@ -71,7 +72,8 @@ def login_view(request):
                 'id': user.id,
                 'email': user.email,
                 'name': user.name,
-                'is_admin': user.is_admin
+                'is_admin': user.is_admin,
+                'is_staff': user.is_staff
             }
         }, status=status.HTTP_200_OK)
 
