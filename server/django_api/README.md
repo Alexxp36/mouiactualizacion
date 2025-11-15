@@ -1,26 +1,100 @@
-# Instrucciones para iniciar el servidor Django
+# Backend Django - MOWI Store
 
-## Windows:
+## 🚀 Configuración Inicial (Primera vez)
 
-1. Abre el explorador de archivos
-2. Ve a la carpeta: `server/django_api`
-3. Haz doble clic en `iniciar_servidor.bat`
+### **Opción 1: Configuración Automática (Recomendada)**
 
-O desde la terminal:
+Ejecuta el script de configuración que creará la base de datos y usuarios de prueba:
+
+**Windows:**
 ```bash
 cd server\django_api
-venv\Scripts\activate
+setup_dev.bat
+```
+
+**Linux/Mac:**
+```bash
+cd server/django_api
+python setup_dev.py
+```
+
+### **Opción 2: Configuración Manual**
+
+```bash
+cd server/django_api
+python manage.py makemigrations
+python manage.py migrate
+python manage.py create_test_users
+```
+
+---
+
+## 🏃 Iniciar el Servidor
+
+### Windows:
+
+**Opción rápida:**
+1. Ve a la carpeta: `server/django_api`
+2. Doble clic en `iniciar_servidor.bat`
+
+**Desde terminal:**
+```bash
+cd server\django_api
 python manage.py runserver
 ```
 
-## El servidor debe estar corriendo en:
-http://localhost:8000
+### Linux/Mac:
+```bash
+cd server/django_api
+python manage.py runserver
+```
 
-## Credenciales del Administrador:
-- Email: admin@mowi.com
-- Contraseña: Admin123!
+El servidor estará disponible en: **http://localhost:8000**
 
-## Endpoints disponibles:
-- POST http://localhost:8000/api/register/ - Registrar cliente
-- POST http://localhost:8000/api/login/ - Iniciar sesión
-- GET http://localhost:8000/admin/ - Panel de administración
+---
+
+## 👤 Usuarios de Prueba
+
+Después de ejecutar la configuración inicial, tendrás estos usuarios:
+
+### **Administrador:**
+- Email: `admin@mowi.com`
+- Password: `admin123`
+- Acceso: Panel de administración (puerto 5173)
+
+### **Cliente:**
+- Email: `cliente@mowi.com`
+- Password: `cliente123`
+- Acceso: Vista de cliente (puerto 3000)
+
+---
+
+## 📡 API Endpoints
+
+### Autenticación:
+- `POST /api/register/` - Registrar nuevo usuario
+- `POST /api/login/` - Iniciar sesión
+
+### Admin Panel Django:
+- `GET /admin/` - Panel de administración de Django
+
+---
+
+## 🛠️ Comandos Útiles
+
+### Crear usuarios de prueba:
+```bash
+python manage.py create_test_users
+```
+
+### Crear superusuario personalizado:
+```bash
+python manage.py createsuperuser
+```
+
+### Ver usuarios existentes:
+```bash
+python manage.py shell
+>>> from users.models import User
+>>> User.objects.all()
+```
