@@ -6,6 +6,16 @@ function Sidebar() {
 
   const isActive = (path) => location.pathname === path;
 
+  const handleLogout = () => {
+    // Limpiar localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+
+    // Redirigir a la vista de login (puerto 3000)
+    window.location.href = 'http://localhost:3000';
+  };
+
   return (
     <aside style={{
       width: '280px',
@@ -80,13 +90,13 @@ function Sidebar() {
         padding: '1rem 0'
       }}>
         <SidebarLink icon="⚙️" label="Configuración" path="/configuracion" active={isActive('/configuracion')} />
-        <SidebarLink icon="🚪" label="Cerrar Sesión" path="/logout" logout={true} />
+        <LogoutButton icon="🚪" label="Cerrar Sesión" onClick={handleLogout} />
       </div>
     </aside>
   )
 }
 
-function SidebarLink({ icon, label, path, active = false, logout = false }) {
+function SidebarLink({ icon, label, path, active = false }) {
   return (
     <Link
       to={path}
@@ -96,7 +106,7 @@ function SidebarLink({ icon, label, path, active = false, logout = false }) {
         gap: '1rem',
         padding: '0.875rem 1.5rem',
         background: active ? '#ff6b35' : 'transparent',
-        color: logout ? '#f56565' : (active ? 'white' : '#4a5568'),
+        color: active ? 'white' : '#4a5568',
         fontWeight: '500',
         textDecoration: 'none',
         transition: 'all 0.2s ease',
@@ -106,6 +116,40 @@ function SidebarLink({ icon, label, path, active = false, logout = false }) {
       <span style={{ fontSize: '1.25rem' }}>{icon}</span>
       <span style={{ fontSize: '1rem' }}>{label}</span>
     </Link>
+  )
+}
+
+function LogoutButton({ icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        padding: '0.875rem 1.5rem',
+        background: 'transparent',
+        color: '#f56565',
+        fontWeight: '500',
+        textDecoration: 'none',
+        transition: 'all 0.2s ease',
+        borderLeft: '3px solid transparent',
+        border: 'none',
+        width: '100%',
+        cursor: 'pointer',
+        fontSize: '1rem',
+        textAlign: 'left'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = '#fff5f5';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'transparent';
+      }}
+    >
+      <span style={{ fontSize: '1.25rem' }}>{icon}</span>
+      <span>{label}</span>
+    </button>
   )
 }
 
