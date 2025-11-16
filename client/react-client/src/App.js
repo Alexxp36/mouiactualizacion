@@ -19,10 +19,9 @@ function App() {
         setUser(parsedUser);
         setIsAuthenticated(true);
 
-        // Si es administrador, redirigir al panel de admin (puerto 5173)
-        if (parsedUser.is_staff || parsedUser.is_admin) {
-          window.location.href = 'http://localhost:5173';
-        }
+        // NO redirigir automáticamente al cargar la página
+        // Solo los clientes deben permanecer aquí
+        // Los admins solo serán redirigidos cuando hagan LOGIN, no al cargar
       } catch (error) {
         console.error('Error parsing user data:', error);
         localStorage.removeItem('access_token');
