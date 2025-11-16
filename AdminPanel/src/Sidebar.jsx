@@ -20,8 +20,8 @@ function Sidebar() {
     console.log('localStorage limpiado');
     console.log('Redirigiendo a puerto 3000...');
 
-    // Forzar redirección completa
-    window.location.replace('http://localhost:3000');
+    // Redirigir con parámetro para forzar logout
+    window.location.replace('http://localhost:3000?logout=true');
   };
 
   return (

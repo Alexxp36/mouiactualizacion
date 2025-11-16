@@ -10,6 +10,25 @@ function App() {
 
   // Verificar si el usuario está autenticado al cargar
   useEffect(() => {
+    // Verificar si viene de un logout (desde AdminPanel)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLogout = urlParams.get('logout');
+
+    if (isLogout === 'true') {
+      // Forzar logout y limpiar URL
+      console.log('Logout detectado desde AdminPanel');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+      setIsAuthenticated(false);
+      setUser(null);
+
+      // Limpiar el parámetro de la URL sin recargar
+      window.history.replaceState({}, '', '/');
+      return;
+    }
+
+    // Verificar autenticación normal
     const token = localStorage.getItem('access_token');
     const userData = localStorage.getItem('user');
 
@@ -27,7 +46,13 @@ function App() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
+        setIsAuthenticated(false);
+        setUser(null);
       }
+    } else {
+      // No hay sesión activa
+      setIsAuthenticated(false);
+      setUser(null);
     }
   }, []);
 
