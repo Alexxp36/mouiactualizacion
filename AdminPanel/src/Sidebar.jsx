@@ -6,14 +6,22 @@ function Sidebar() {
 
   const isActive = (path) => location.pathname === path;
 
-  const handleLogout = () => {
+  const handleLogout = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log('Cerrando sesión...');
+
     // Limpiar localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
 
-    // Redirigir a la vista de login (puerto 3000)
-    window.location.href = 'http://localhost:3000';
+    console.log('localStorage limpiado');
+    console.log('Redirigiendo a puerto 3000...');
+
+    // Forzar redirección completa
+    window.location.replace('http://localhost:3000');
   };
 
   return (
